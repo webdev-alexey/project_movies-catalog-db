@@ -9,32 +9,34 @@ const options = {
   },
 };
 
-// fetch(url + "top", options)
-//   .then((res) => res.json())
-//   .then((json) => console.log(json))
-//   .catch((err) => console.log(err));
-
 const filmsWrapper = document.querySelector(".films");
+
+async function fetchData(url, options) {
+  const response = await fetch(url, options);
+  const data = await response.json();
+  return data;
+}
 
 async function fetchAndRenderFilms() {
   try {
-    const response = await fetch(url + "top", options);
-    const data = await response.json();
-
-    for (film of data.films) {
-      console.timeLog(film);
-      const html = `
-        <div class="card">
-            <img src=${film.posterUrlPreview} alt=${film.nameRu} class="card__img" />
-            <h3 class="card__title">${film.nameRu}</h3>
-            <p class="card__year">${film.year}</p>
-            <p class="card__rate">Рейтинг: ${film.rating}</p>
-        </div>
-        `;
-      filmsWrapper.insertAdjacentHTML("beforeend", html);
-    }
+    const data = await fetchData(url + "top", options);
+    renderFilms(data.films);
   } catch (err) {
     console.log(err);
+  }
+}
+
+function renderFilms(films) {
+  for (film of films) {
+    const html = `
+      <div class="card">
+          <img src=${film.posterUrlPreview} alt=${film.nameRu} class="card__img" />
+          <h3 class="card__title">${film.nameRu}</h3>
+          <p class="card__year">${film.year}</p>
+          <p class="card__rate">Рейтинг: ${film.rating}</p>
+      </div>
+      `;
+    filmsWrapper.insertAdjacentHTML("beforeend", html);
   }
 }
 
