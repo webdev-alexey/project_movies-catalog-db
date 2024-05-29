@@ -1,5 +1,4 @@
 const apiKey = "0ac301a9-1fd4-4d82-b10d-450c085d12ff";
-
 const url = "https://kinopoiskapiunofficial.tech/api/v2.2/films/";
 const options = {
   method: "GET",
@@ -10,20 +9,31 @@ const options = {
 };
 
 const filmsWrapper = document.querySelector(".films");
+const loader = document.querySelector(".loader-wrapper");
+const btnLoaderMore = document.querySelector(".show-more");
+
+async function fetchAndRenderFilms() {
+  try {
+    loader.classList.remove("none");
+
+    const data = await fetchData(url + "top", options);
+
+    if (data.pagesCount > 1) {
+      btnLoaderMore.classList.remove("none");
+    }
+
+    loader.classList.add("none");
+
+    renderFilms(data.films);
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 async function fetchData(url, options) {
   const response = await fetch(url, options);
   const data = await response.json();
   return data;
-}
-
-async function fetchAndRenderFilms() {
-  try {
-    const data = await fetchData(url + "top", options);
-    renderFilms(data.films);
-  } catch (err) {
-    console.log(err);
-  }
 }
 
 function renderFilms(films) {
