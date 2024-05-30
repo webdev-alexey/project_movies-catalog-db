@@ -10,21 +10,25 @@ const options = {
 
 const filmsWrapper = document.querySelector(".films");
 const loader = document.querySelector(".loader-wrapper");
-const btnLoaderMore = document.querySelector(".show-more");
+const btnShowMore = document.querySelector(".show-more");
+btnShowMore.onclick = fetchAndRenderFilms;
+
+let page = 1;
 
 async function fetchAndRenderFilms() {
   try {
     loader.classList.remove("none");
 
-    const data = await fetchData(url + "top", options);
+    const data = await fetchData(url + `top?page=${page}`, options);
+    if (data.pagesCount > 1) page++;
 
-    if (data.pagesCount > 1) {
-      btnLoaderMore.classList.remove("none");
-    }
+    if (data.pagesCount > 1) btnShowMore.classList.remove("none");
 
     loader.classList.add("none");
 
     renderFilms(data.films);
+
+    if (page > data.pagesCount) btnShowMore.classList.add("none");
   } catch (err) {
     console.log(err);
   }
