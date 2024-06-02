@@ -94,14 +94,39 @@ function renderFilmData(film) {
     <div class="film__desc">
       <p class="film__details">Год: ${film.year}</p>
       <p class="film__details">Рейтинг: ${film.ratingKinopoisk}</p>
-      <p class="film__details">Продолжительность: ${film.filmLength}</p>
-      <p class="film__details">Страна: ${film.countries[0]["country"]}</p>
+      <p class="film__details">Продолжительность: ${formatFilmLength(
+        film.filmLength
+      )}</p>
+      <p class="film__details">Страна: ${formatCountry(film.countries)}</p>
       <p class="film__text">${film.description}</p>
     </div>
   </div>
   `;
 
   containerRight.insertAdjacentHTML("beforeend", html);
+}
+
+function formatFilmLength(value) {
+  let length = "";
+  const hours = Math.floor(value / 60);
+  const minutes = value % 60;
+
+  if (hours > 0) length += hours + " ч. ";
+  if (minutes > 0) length += minutes + " мин.";
+
+  return length;
+}
+
+function formatCountry(countriesArray) {
+  let countriesString = "";
+
+  for (country of countriesArray) {
+    countriesString += country.country;
+    if (countriesArray.indexOf(country) + 1 < countriesArray.length)
+      countriesString += ", ";
+  }
+
+  return countriesString;
 }
 
 fetchAndRenderFilms();
